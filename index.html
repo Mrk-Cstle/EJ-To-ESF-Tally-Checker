@@ -70,16 +70,22 @@
     
     <script>
         function process(){
-            ej();
-            csv();
-        }
-        function ej(){
             const ejFile = document.getElementById('ejfile').files[0];
+             const esfFile = document.getElementById('esffile').files[0];
 
             if (!ejFile) {
             alert('Please select a EJ file.');
                 return;
+            }
+            if (!esfFile) {
+            alert('Please select a ESF file.');
+                return;
+            }
+            ej(ejFile);
+            csv(esfFile);
         }
+        function ej(ejFile){
+           
         const reader = new FileReader();
         reader.onload = function(event) {
                 const textContent = event.target.result;
@@ -123,13 +129,8 @@
 
     </script>
     <script>
-        function csv() {
-        const esfFile = document.getElementById('esffile').files[0];
-
-        if (!esfFile) {
-            alert('Please select a ESF file.');
-                return;
-        }
+        function csv(esfFile) {
+        
         Papa.parse(esfFile, {
                 complete: function(results) {
                     const data = results.data;
