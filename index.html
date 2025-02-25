@@ -18,7 +18,7 @@
         <div class="leading-8 bg-[#F5F5F5] bg-opacity-75 shadow-xl  px-5 py-5 mx-2 my-5 h-auto  rounded-md  flex flex-col ">
       
                 <label>Upload EJ File:</label>
-                <input type="file" id="ejfile" accept=".txt" required class="border-1 rounded-sm p-1">
+                <input type="file" id="ejfile" accept=".txt" required class="border-1 rounded-sm p-1 invalid:border-pink-500">
                 <div class="flex justify-end">
                    
                     
@@ -36,7 +36,7 @@
         </div>
         <div class="leading-8 bg-[#F5F5F5] bg-opacity-75 shadow-xl px-5 py-5 mx-2 my-5 rounded-md  flex flex-col"  >
             <label>Upload ESF File:</label>
-            <input type="file" id="esffile" accept=".txt" required class="border-1 rounded-sm p-1">
+            <input type="file" id="esffile" accept=".txt" required class="border-1 rounded-sm p-1 invalid:border-pink-500">
             <div class="flex justify-end">
                 
                 
@@ -75,6 +75,7 @@
 
             if (!ejFile) {
             alert('Please select a EJ file.');
+           
                 return;
             }
             if (!esfFile) {
