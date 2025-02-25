@@ -7,20 +7,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
-<body class="">
+<body >
     <div class="text-lg flex flex-row justify-center py-5 bg-[rgb(255,0,128)] text-white font-black">
         <h1 class="">EJ to ESF Tally Checker</h1>
     </div>
+    <div class="sm:px-20">
+
     
-    <div class="flex flex-col justify-center text-xs   sm:flex-row  sm:text-base gap-10">
+    <div class="flex flex-wrap flex-col justify-center text-xs   sm:flex-row  sm:text-base gap-10">
         <div class="leading-8 bg-[#F5F5F5] bg-opacity-75 shadow-xl  px-5 py-5 mx-2 my-5 h-auto  rounded-md  flex flex-col ">
       
                 <label>Upload EJ File:</label>
-                <input type="file" id="ejfile" accept=".txt" required class="border-1 rounded-sm p-1">
+                <input type="file" id="ejfile" accept=".txt" required class="border-1 rounded-sm p-1 focus:border-pink-500 focus:outline focus:outline-pink-500">
                 <div class="flex justify-end">
-                    <button onclick="ej()"  class="bg-[#fd7e14] hover:bg-[#FFA500] w-full sm:w-24 transform hover:scale-110   h-6 rounded-sm text-sm my-3 text-white ">
-                        Process
-                    </button>
+                   
                     
                     
                    
@@ -36,11 +36,9 @@
         </div>
         <div class="leading-8 bg-[#F5F5F5] bg-opacity-75 shadow-xl px-5 py-5 mx-2 my-5 rounded-md  flex flex-col"  >
             <label>Upload ESF File:</label>
-            <input type="file" id="esffile" accept=".txt" required class="border-1 rounded-sm p-1">
+            <input type="file" id="esffile" accept=".txt" required class="border-1 rounded-sm p-1 focus:border-pink-500 focus:outline focus:outline-pink-500">
             <div class="flex justify-end">
-                <button onclick="csv()" class="bg-[#fd7e14] hover:bg-[#FFA500] w-full sm:w-24 transform hover:scale-110  w-24 h-6 rounded-sm text-sm my-3 text-white ">
-                    Process
-                </button>
+                
                 
                 
                
@@ -50,15 +48,46 @@
             <h4>Net Sale</h4>
             <p id="esf-net">₱0</p>
         </div>
+        
     </div>
+        <div class="flex flex-wrap flex-col justify-end text-xs   sm:flex-row  sm:text-base sm:px-20"  >
+
+            <div class="mx-5">
+                <label class="sm:mx-2">Click To Process:</label>
+           
+           
+                <button onclick="process()" class="bg-[#fd7e14] hover:bg-[#FFA500] mt-2 sm:mt-0 w-full sm:w-24 transform hover:scale-110  w-20 h-6 rounded-sm text-sm  text-white ">
+                    Process
+                </button>
+                
+                
+               
+            </div>
+              
+            
+        </div>
+    </div>
+    
     <script>
-        function ej(){
+        function process(){
             const ejFile = document.getElementById('ejfile').files[0];
+             const esfFile = document.getElementById('esffile').files[0];
 
             if (!ejFile) {
             alert('Please select a EJ file.');
+            document.getElementById("ejfile").focus();
                 return;
+            }
+            if (!esfFile) {
+            alert('Please select a ESF file.');
+            document.getElementById("esffile").focus();
+                return;
+            }
+            ej(ejFile);
+            csv(esfFile);
         }
+        function ej(ejFile){
+           
         const reader = new FileReader();
         reader.onload = function(event) {
                 const textContent = event.target.result;
@@ -102,22 +131,26 @@
 
     </script>
     <script>
-        function csv() {
-        const esfFile = document.getElementById('esffile').files[0];
-
-        if (!esfFile) {
-            alert('Please select a ESF file.');
-                return;
-        }
+        function csv(esfFile) {
+        
         Papa.parse(esfFile, {
                 complete: function(results) {
                     const data = results.data;
                     const collection = calculate_collection(data);  
                     const netsale = calculate_net(data);
+                    const formattedCollection = new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                    }).format(collection);
+                    const formattedNet = new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                    }).format(netsale);
+
                     
                     
-                    document.getElementById('esf-coll').innerText = `₱ ${collection}`;
-                    document.getElementById('esf-net').innerText = `₱ ${netsale}`;
+                    document.getElementById('esf-coll').innerText = `₱ ${formattedCollection}`;
+                    document.getElementById('esf-net').innerText = `₱ ${formattedNet}`;
                 },
                 header: false,  
                 skipEmptyLines: true
@@ -135,6 +168,7 @@
               
                
                 collection += parseFloat(coll);
+                
                
                
             });
