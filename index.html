@@ -67,7 +67,7 @@
             
         </div>
     </div>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function process(){
             const ejFile = document.getElementById('ejfile').files[0];
@@ -83,10 +83,45 @@
             document.getElementById("esffile").focus();
                 return;
             }
-            ej(ejFile);
-            csv(esfFile);
+            // ej(ejFile);
+            // csv(esfFile);
+
+            let ejcoll = 0;
+            let ejnet = 0;
+            let esfcoll = 0;
+            let esfnet = 0;
+
+            ej(ejFile, function (totalCollection,totalNet) {
+                ejcoll = totalCollection;
+                ejnet = totalNet;
+
+                csv(esfFile, function(formattedCollection,formattedNet){
+                    esfcoll = formattedCollection;
+                    esfnet = formattedNet;
+                    let errorMessage = "";
+                    if (ejcoll !== esfcoll) {
+                     errorMessage += "Collection_";
+                    }
+
+                  
+                    if (ejnet !== esfnet) {
+                        errorMessage += "Net Sale_";
+                    }
+
+                  
+                    if (errorMessage) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "ERROR",
+                            text: errorMessage.trim()+"Discrepancy!",  
+                        });
+                    }
+
+                })
+            })
+
         }
-        function ej(ejFile){
+        function ej(ejFile, callback){
            
         const reader = new FileReader();
         reader.onload = function(event) {
@@ -99,7 +134,7 @@
                 const totalNet = searchnet(textContent);
                 document.getElementById('ej-net').innerText = `₱ ${totalNet}`;
               
-              
+                callback(totalCollection, totalNet);
                     
             };
             
@@ -131,7 +166,7 @@
 
     </script>
     <script>
-        function csv(esfFile) {
+        function csv(esfFile, callback) {
         
         Papa.parse(esfFile, {
                 complete: function(results) {
@@ -151,6 +186,7 @@
                     
                     document.getElementById('esf-coll').innerText = `₱ ${formattedCollection}`;
                     document.getElementById('esf-net').innerText = `₱ ${formattedNet}`;
+                    callback(formattedCollection, formattedNet);
                 },
                 header: false,  
                 skipEmptyLines: true
