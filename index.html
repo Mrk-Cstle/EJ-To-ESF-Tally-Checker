@@ -167,8 +167,9 @@
 
               
                
-                collection += parseFloat(coll);
-                
+            if (!isNaN(coll) && coll !== null && coll !== '') {
+            collection += parseFloat(coll); 
+            }
                
                
             });
@@ -186,9 +187,11 @@
                 const nets = row[15]; 
 
               
-               
+            if (!isNaN(nets) && nets !== null && nets !== '') {
+                netsale += parseFloat(nets); 
+            }
               
-                netsale += parseFloat(nets);
+              
                
             });
 
